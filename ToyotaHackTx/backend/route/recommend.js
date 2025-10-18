@@ -1,11 +1,15 @@
 import express from "express";
 import axios from "axios";
-import OpenAI from "openai";
+import { CohereClientV2 } from "cohere-ai";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const router = express.Router();
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const cohere = new CohereClientV2({
+  token: process.env.COHERE_API_KEY,
+});
 
-// helper: generate random price
 function randomPrice(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -14,44 +18,60 @@ router.post("/", async (req, res) => {
   try {
     const { income, creditScore, lifestyle, preferredType } = req.body;
 
-    // 0. Process finicial information
-      
-    // 1. Fetch Toyota cars from CarQuery API
-    const response = await axios.get(
-      "https://www.carqueryapi.com/api/0.3/?cmd=getModels&make=toyota"
+    const r = await axios.get(
+      "https://www.carqueryapi.com/api/0.3/?cmd=getModels&make=toyota",
+      { timeout: 8000 }
     );
 
-    const models = response.data.Models.slice(0, 10).map(m => ({
+    let models = [];
+    if (typeof r.data === "string") {
+      try {
+        const jsonStr = r.data.replace(/^.*?\(/, "").replace(/\);?$/, "");
+        const json = JSON.parse(jsonStr);
+        models = json.Models || [];
+      } catch {
+        models = [];
+      }
+    } else {
+      models = r.data.Models || [];
+    }
+
+    const simplified = models.slice(0, 5).map(m => ({
       name: m.model_name,
       type: m.model_body || "Unknown",
-      year: m.model_year,
+      year: m.model_year || "N/A",
       price: randomPrice(22000, 65000),
     }));
 
-    // 2. Send data to OpenAI for recommendation reasoning
     const prompt = `
-      User info:
-      - Income: $${income}
-      - Credit Score: ${creditScore}
-      - Lifestyle: ${lifestyle}
-      - Preferred Type: ${preferredType}
+You are a helpful automotive expert recommending Toyota models for users.
 
-      Car data: ${JSON.stringify(models)}
+User info:
+- Income: $${income}
+- Credit Score: ${creditScore}
+- Lifestyle: ${lifestyle}
+- Preferred Vehicle Type: ${preferredType}
 
-      Recommend 2 Toyota models from this list that best fit the user.
-      Justify your choices briefly in one sentence each.
-    `;
+Available Toyota Models:
+${JSON.stringify(simplified, null, 2)}
 
-    const aiResponse = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [{ role: "user", content: prompt }],
+Recommend the 2–3 best options and briefly explain why each suits the user.
+`;
+
+    const response = await cohere.chat({
+      model: "command-a-reasoning-08-2025",
+      messages: [
+        { role: "user", content: prompt }
+      ],
+      temperature: 0.6,
     });
 
-    const recommendation = aiResponse.choices[0].message.content;
-    res.json({ models, recommendation });
+    const recommendation = response.message?.content?.[0]?.text || "No recommendation generated.";
+
+    res.json({ models: simplified, recommendation });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to get recommendation" });
+    console.error("❌ Error:", err);
+    res.status(500).json({ error: "Failed to get recommendation", details: err.message });
   }
 });
 

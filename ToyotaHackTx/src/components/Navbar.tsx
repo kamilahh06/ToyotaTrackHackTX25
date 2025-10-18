@@ -1,5 +1,6 @@
-import { Car } from 'lucide-react';
 import { Button } from './ui/button';
+import logoImage from '../assets/toyota_image.png';
+
 
 export function Navbar() {
   return (
@@ -8,8 +9,7 @@ export function Navbar() {
         <div className="flex items-center justify-between">
           {/* Logo - Left Aligned */}
           <div className="flex items-center gap-2">
-            <Car className="w-8 h-8 text-red-600" />
-            <span className="text-red-600">AutoFinance</span>
+            <img src={logoImage} alt="Toyota Logo" className="h-10" />
           </div>
 
           {/* Navigation Links - Right Aligned */}

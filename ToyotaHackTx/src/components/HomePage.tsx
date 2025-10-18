@@ -1,4 +1,3 @@
-import { Navbar } from './Navbar';
 import { Button } from './ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from './ui/carousel';
 import { ImageWithFallback } from './figma/ImageWithFallback';
@@ -28,10 +27,7 @@ export function HomePage({ onStartQuiz }: HomePageProps) {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50">
-      <Navbar />
-
-      <main className="container mx-auto px-4 py-12">
+    <main className="container mx-auto px-4 py-12">
         {/* Carousel Section */}
         <div className="max-w-5xl mx-auto mb-16">
           <Carousel className="w-full">
@@ -68,6 +64,5 @@ export function HomePage({ onStartQuiz }: HomePageProps) {
           </Button>
         </div>
       </main>
-    </div>
   );
 }

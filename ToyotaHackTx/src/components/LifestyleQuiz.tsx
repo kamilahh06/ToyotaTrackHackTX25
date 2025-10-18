@@ -80,7 +80,7 @@ export function LifestyleQuiz({ onSubmit, onBack, initialData }: LifestyleQuizPr
   return (
     <Card className="bg-white rounded-lg shadow-lg p-8">
       <div className="mb-8">
-        <h1 className="text-red-600 mb-2">Step 2: Lifestyle Preferences</h1>
+        <h1 className="text-red-600 mb-2">Step 2: Car Preferences</h1>
         <p className="text-gray-600">
           Tell us about your ideal vehicle preferences
         </p>

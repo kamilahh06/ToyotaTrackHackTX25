@@ -167,9 +167,34 @@ export function ResultsPage({ financesData,
       </div>
 
       {/* Chatbot Section */}
-      <div>
+      {/* <div>
         <h2 className="text-red-600 mb-6">Have Questions? Chat with your Personal Assistant!</h2>
         <ChatBot />
+      </div> */}
+
+      {/* Chatbot Section */}
+      <div>
+        <h2 className="text-red-600 mb-6">Have Questions? Chat with your Personal Assistant!</h2>
+        <ChatBot
+          backendUrl="http://localhost:8080" // match your running server port
+          userProfile={{
+            income: financesData.monthlyIncome,
+            creditScore: financesData.creditScore,
+            lifestyle: {
+              color: lifestyleData.carColor,
+              seats: lifestyleData.seats,
+              range: lifestyleData.range,
+              accessories: lifestyleData.accessories,
+            },
+            // send the models you just showed the user as extra context
+            carModels: (recommendedCars || []).map(c => ({
+              name: c.name,
+              price: c.price,
+              seats: c.seats,
+              range: c.range,
+            })),
+          }}
+        />
       </div>
 
       {/* Action Buttons */}

@@ -5,9 +5,12 @@ import { StepIndicator } from './components/StepIndicator';
 import { FinancesQuiz } from './components/FinancesQuiz';
 import { LifestyleQuiz } from './components/LifestyleQuiz';
 import { ResultsPage } from './components/ResultsPage';
+import { AccountPage } from './components/AccountPage';
+
+type PageView = 'home' | 'quiz' | 'account';
 
 export default function App() {
-  const [showQuiz, setShowQuiz] = useState(false);
+  const [currentPage, setCurrentPage] = useState<PageView>('home');
   const [currentStep, setCurrentStep] = useState(1);
   const [financesData, setFinancesData] = useState({
     monthlyIncome: '',
@@ -23,8 +26,16 @@ export default function App() {
   });
 
   const handleStartQuiz = () => {
-    setShowQuiz(true);
+    setCurrentPage('quiz');
     setCurrentStep(1);
+  };
+
+  const handleAccountClick = () => {
+    setCurrentPage('account');
+  };
+
+  const handleBackToHome = () => {
+    setCurrentPage('home');
   };
 
   const handleFinancesSubmit = (data: typeof financesData) => {
@@ -42,7 +53,7 @@ export default function App() {
   };
 
   const handleStartOver = () => {
-    setShowQuiz(false);
+    setCurrentPage('home');
     setCurrentStep(1);
     setFinancesData({
       monthlyIncome: '',
@@ -60,11 +71,17 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50">
-      <Navbar />
+      <Navbar onAccountClick={handleAccountClick} />
       
-      {!showQuiz ? (
+      {currentPage === 'home' && (
         <HomePage onStartQuiz={handleStartQuiz} />
-      ) : (
+      )}
+
+      {currentPage === 'account' && (
+        <AccountPage onBack={handleBackToHome} />
+      )}
+
+      {currentPage === 'quiz' && (
         <div className="container mx-auto px-4 py-12 max-w-3xl">
           {currentStep < 3 && <StepIndicator currentStep={currentStep} />}
           

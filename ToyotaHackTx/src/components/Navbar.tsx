@@ -1,8 +1,11 @@
 import { Button } from './ui/button';
 import logoImage from '../assets/toyota_image.png';
 
+interface NavbarProps {
+  onAccountClick?: () => void;
+}
 
-export function Navbar() {
+export function Navbar({ onAccountClick }: NavbarProps) {
   return (
     <nav className="bg-white shadow-sm border-b">
       <div className="container mx-auto px-4 py-4">
@@ -20,7 +23,11 @@ export function Navbar() {
             <a href="#contact" className="text-gray-700 hover:text-red-600 transition-colors">
               Contact
             </a>
-            <Button variant="outline" className="border-red-600 text-red-600 hover:bg-red-50">
+            <Button
+              variant="outline"
+              className="border-red-600 text-red-600 hover:bg-red-50"
+              onClick={onAccountClick}
+            >
               Account
             </Button>
           </div>

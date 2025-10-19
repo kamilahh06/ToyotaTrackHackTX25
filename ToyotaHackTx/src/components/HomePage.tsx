@@ -27,7 +27,8 @@ export function HomePage({ onStartQuiz }: HomePageProps) {
   ];
 
   return (
-    <main className="container mx-auto px-4 py-12">
+    <div>
+      <main className="container mx-auto px-4 py-12">
         {/* Carousel Section */}
         <div className="max-w-5xl mx-auto mb-16">
           <Carousel className="w-full">
@@ -64,5 +65,6 @@ export function HomePage({ onStartQuiz }: HomePageProps) {
           </Button>
         </div>
       </main>
+    </div>
   );
 }

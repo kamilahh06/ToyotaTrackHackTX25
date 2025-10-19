@@ -16,7 +16,7 @@ function randomPrice(min, max) {
 
 // Helper to extract model names like "Camry", "RAV4"
 function extractModelNames(text) {
-  const modelRegex = /Toyota\s([\w\-]+)/g;
+ const modelRegex = /Toyota\s([\w\-]+(?:\s[\w\-]+)?)/gi;
   const matches = [];
   let match;
   while ((match = modelRegex.exec(text)) !== null) {
@@ -71,48 +71,89 @@ router.post("/", async (req, res) => {
     }
 
     // Simplify model list for AI context (can be many models)
-    const simplified = models.slice(0, 10).map(m => ({
-     name: m.model_name,
-      type: m.model_body || "Unknown",
-      year: m.model_year || "N/A",
-      seats: m.model_seats || 5,  // Might be undefined; default to 5
-      range: "medium",            // We’ll update this based on MPG below
-      price: randomPrice(22000, 40000),
-    }));
+      const seatCount = parseInt(lifestyle.seats, 10);
+      const preferredRange = lifestyle.range;
+
+      const simplified = (await Promise.all(
+        models.slice(0, 25).map(async (m) => {
+          let type = m.model_body || "Unknown";
+
+          // Try to get model_body from trims
+          try {
+            const trimRes = await axios.get(
+              `https://www.carqueryapi.com/api/0.3/?cmd=getTrims&make=toyota&model=${m.model_name}`
+            );
+            const trimData = JSON.parse(
+              trimRes.data.replace(/^.*?\(/, "").replace(/\);?$/, "")
+            );
+            const trim = trimData?.Trims?.[0];
+
+            if (trim?.model_body) type = trim.model_body;
+          } catch (err) {consol
+            console.warn(`Could not get type for ${m.model_name}`);
+          }
+
+          return {
+            name: m.model_name,
+            type,
+            year: m.model_year || "N/A",
+            seats: m.model_seats || 5,
+            range: preferredRange, // default to user's preference
+            price: randomPrice(22000, 40000),
+          };
+        })
+      )).filter((model) => {
+        // You can decide how strict you want filtering to be here
+        return model.seats >= seatCount;
+      });
+
 
     // Prompt to Cohere
     const prompt = `
-      You are a helpful automotive expert recommending Toyota models for users.
+    You are a helpful automotive expert recommending Toyota models for users.
 
-      User info:
-      - Income: $${income}
-      - Credit Score: ${creditScore}
-      - Lifestyle: ${lifestyle}
-      - Preferred Vehicle Type: ${preferredType}
+    User info:
+    - Income: $${income}
+    - Credit Score: ${creditScore}
+    - Preferred Vehicle Type: ${preferredType}
+    - Seats: ${lifestyle.seats}
+    - Range: ${lifestyle.range}
+    - Accessories: ${(lifestyle.accessories || []).join(", ") || "None"}
+    - Preferred Color: ${lifestyle.carColor}
 
-      Available Toyota Models:
-      ${JSON.stringify(simplified, null, 2)}
+    Available Toyota Models:
+    ${JSON.stringify(simplified, null, 2)}
 
-Recommend the 3 best options and briefly explain why each suits the user.
-`;
-
+    Recommend the 3 best options and briefly explain why each suits the user.
+    `;
+ 
     // AI response
     const response = await cohere.chat({
       model: "command-a-reasoning-08-2025",
       messages: [{ role: "user", content: prompt }],
       temperature: 0.6,
     });
+    
+    console.log('AI raw response:', response);
+    const content = response.message?.content;
 
-    const recommendation = response.message?.content?.[0]?.text || "No recommendation generated.";
+  const recommendationContent = Array.isArray(content)
+    ? content
+        .filter(part => part.type === "text")
+        .map(part => part.text)
+        .join("\n\n")
+    : content || "No recommendation.";
+  const extractedModels = extractModelNames(recommendationContent);
 
-    // Extract model names from AI output
-    const extractedModels = extractModelNames(recommendation); // e.g., ['Camry', 'RAV4']
+
+
 
     // Build models with images and price
    const modelsWithImages = await Promise.all(
   extractedModels.map(async (modelName) => {
-    let seats = 5;
-    let range = "medium";
+  let seats = parseInt(lifestyle.seats, 10) || 5;
+  let range = lifestyle.range || "medium";
+
 
     try {
       const trimRes = await axios.get(
@@ -155,9 +196,10 @@ Recommend the 3 best options and briefly explain why each suits the user.
 );
 
 
+
     // Final response
     res.json({
-      recommendation,
+      recommendationContent,
       models: modelsWithImages,
     });
   } catch (err) {

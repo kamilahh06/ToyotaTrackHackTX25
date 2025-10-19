@@ -6,6 +6,8 @@ import { FinancesQuiz } from './components/FinancesQuiz';
 import { LifestyleQuiz } from './components/LifestyleQuiz';
 import { ResultsPage } from './components/ResultsPage';
 import { AccountPage } from './components/AccountPage';
+import express from "express";
+
 
 type PageView = 'home' | 'quiz' | 'account';
 
@@ -53,7 +55,7 @@ export default function App() {
   const payload = {
     income: financesData.monthlyIncome,
     creditScore: financesData.creditScore,
-    lifestyle: JSON.stringify(data), 
+    lifestyle: data,
     preferredType: "SUV", 
   };
 
@@ -71,7 +73,8 @@ export default function App() {
     }
 
     const result = await res.json();
-    setAiRecommendation(result.recommendation);
+    console.log("Fetched AI Result:", result);
+   setAiRecommendation(result.recommendationContent); 
     setRecommendedCars(result.models);
   } catch (err) {
     console.error("AI fetch error:", err);

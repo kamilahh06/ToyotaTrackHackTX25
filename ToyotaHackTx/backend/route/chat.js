@@ -19,6 +19,7 @@ router.post("/chat", async (req, res) => {
         userProfile 
       } = req.body;
   
+      console.log("🔍 Incoming request body:", req.body);
       if (!message) {
         return res.status(400).json({ error: "Message is required" });
       }

@@ -56,75 +56,105 @@ export function AccountPage({ onBack, onStartQuiz , onGoToResults}: AccountPageP
     return /^\d{9}$/.test(ssn.replace(/\D/g, ''));
   };
 
-  const handleSignInSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const errors: Record<string, string> = {};
+  const handleSignInSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  const errors: Record<string, string> = {};
 
-    if (!signInData.email) {
-      errors.email = 'Email is required';
-    } else if (!validateEmail(signInData.email)) {
-      errors.email = 'Please enter a valid email';
-    }
+  if (!signInData.email) {
+    errors.email = 'Email is required';
+  } else if (!validateEmail(signInData.email)) {
+    errors.email = 'Please enter a valid email';
+  }
 
-    if (!signInData.phoneNumber) {
-      errors.phoneNumber = 'Phone number is required';
-    } else if (!validatePhone(signInData.phoneNumber)) {
-      errors.phoneNumber = 'Please enter a valid 10-digit phone number';
-    }
+  if (!signInData.phoneNumber) {
+    errors.phoneNumber = 'Phone number is required';
+  } else if (!validatePhone(signInData.phoneNumber)) {
+    errors.phoneNumber = 'Please enter a valid 10-digit phone number';
+  }
 
-    setSignInErrors(errors);
+  setSignInErrors(errors);
 
-    if (Object.keys(errors).length === 0) {
-      // Handle sign in logic here
-      console.log('Sign in:', signInData);
-      alert('Sign in successful!');
+  if (Object.keys(errors).length === 0) {
+    try {
+      const response = await fetch('/api/users/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(signInData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Login failed');
+      }
+
+      // Success: proceed to results page or store user info
+      console.log('✅ Login successful:', data);
       onGoToResults();
+    } catch (err: any) {
+      alert(`Login error: ${err.message}`);
     }
-  };
+  }
+};
 
-  const handleCreateAccountSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const errors: Record<string, string> = {};
 
-    if (!createAccountData.name) {
-      errors.name = 'Name is required';
-    }
+  const handleCreateAccountSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  const errors: Record<string, string> = {};
 
-    if (!createAccountData.email) {
-      errors.email = 'Email is required';
-    } else if (!validateEmail(createAccountData.email)) {
-      errors.email = 'Please enter a valid email';
-    }
+  if (!createAccountData.name) {
+    errors.name = 'Name is required';
+  }
 
-    if (!createAccountData.phoneNumber) {
-      errors.phoneNumber = 'Phone number is required';
-    } else if (!validatePhone(createAccountData.phoneNumber)) {
-      errors.phoneNumber = 'Please enter a valid 10-digit phone number';
-    }
+  if (!createAccountData.email) {
+    errors.email = 'Email is required';
+  } else if (!validateEmail(createAccountData.email)) {
+    errors.email = 'Please enter a valid email';
+  }
 
-    if (!createAccountData.password) {
-      errors.password = 'Password is required';
-    } else if (createAccountData.password.length < 8) {
-      errors.password = 'Password must be at least 8 characters';
-    }
+  if (!createAccountData.phoneNumber) {
+    errors.phoneNumber = 'Phone number is required';
+  } else if (!validatePhone(createAccountData.phoneNumber)) {
+    errors.phoneNumber = 'Please enter a valid 10-digit phone number';
+  }
 
-    if (!createAccountData.ssn) {
-      errors.ssn = 'SSN is required';
-    } else if (!validateSSN(createAccountData.ssn)) {
-      errors.ssn = 'Please enter a valid 9-digit SSN';
-    }
+  if (!createAccountData.password) {
+    errors.password = 'Password is required';
+  } else if (createAccountData.password.length < 8) {
+    errors.password = 'Password must be at least 8 characters';
+  }
 
-    setCreateAccountErrors(errors);
+  if (!createAccountData.ssn) {
+    errors.ssn = 'SSN is required';
+  } else if (!validateSSN(createAccountData.ssn)) {
+    errors.ssn = 'Please enter a valid 9-digit SSN';
+  }
 
-    if (Object.keys(errors).length === 0) {
-      // Handle create account logic here
-      console.log('Create account:', createAccountData);
+  setCreateAccountErrors(errors);
+
+  if (Object.keys(errors).length === 0) {
+    try {
+      const response = await fetch('/api/users/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(createAccountData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Registration failed');
+      }
+
+      console.log('✅ Registration successful:', data);
       alert('Account created successfully!');
-
-      // Navigate to quiz page
-        onStartQuiz();
+      onStartQuiz();
+    } catch (err: any) {
+      alert(`Registration error: ${err.message}`);
     }
-  };
+  }
+};
+
 
   const formatPhoneNumber = (value: string) => {
     const numbers = value.replace(/\D/g, '');

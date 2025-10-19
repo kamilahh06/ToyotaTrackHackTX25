@@ -252,6 +252,7 @@ export function ResultsPage({ financesData,
     return basePrice * (creditScoreMultiplier[financesData.creditScore as keyof typeof creditScoreMultiplier] || 0.15);
   };
 
+
   const downPayment = calculateDownPayment();
   const estimatedMonthlyPayment = idealPayment;
 
@@ -285,15 +286,6 @@ export function ResultsPage({ financesData,
 
   return (
     <div className="space-y-8">
-
-     {aiRecommendation && (
-        <Card className="bg-white rounded-lg shadow-lg p-6">
-          <h2 className="text-red-600 mb-2">AI Recommendation</h2>
-          <p className="text-gray-700 whitespace-pre-line">
-            {aiRecommendation}
-          </p>
-        </Card>
-      )}
 
       {/* Summary Header */}
       <Card className="bg-white rounded-lg shadow-lg p-8">

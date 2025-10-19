@@ -54,7 +54,7 @@ export function HomePage({ onStartQuiz }: HomePageProps) {
           <h1 className="text-red-600 mb-4">Take Your Quiz Today</h1>
           <p className="text-gray-700 mb-8">
             Discover the perfect vehicle financing option tailored to your lifestyle and budget. 
-            Our simple 3-step quiz helps match you with the ideal car and payment plan.
+            Our simple 2-step quiz helps match you with the ideal car and payment plan.
           </p>
           <Button
             onClick={onStartQuiz}

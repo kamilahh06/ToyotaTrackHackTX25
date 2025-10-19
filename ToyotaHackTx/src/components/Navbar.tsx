@@ -25,10 +25,10 @@ export function Navbar({ onAccountClick }: NavbarProps) {
 
     {/* Right Nav Links */}
     <div className="flex items-center gap-6">
-      <a href="#about" className="text-gray-700 hover:text-red-600 transition-colors">
+      <a href="https://www.toyotafinancial.com/us/en.html" className="text-gray-700 hover:text-red-600 transition-colors">
         About
       </a>
-      <a href="#contact" className="text-gray-700 hover:text-red-600 transition-colors">
+      <a href="https://www.toyotafinancial.com/us/en/contact_us.html" className="text-gray-700 hover:text-red-600 transition-colors">
         Contact
       </a>
       <Button

@@ -24,6 +24,9 @@ export default function App() {
     range: '',
     accessories: [] as string[],
   });
+  const [aiRecommendation, setAiRecommendation] = useState<string | null>(null);
+  const [recommendedCars, setRecommendedCars] = useState<any[]>([]);
+
 
   const handleStartQuiz = () => {
     setCurrentPage('quiz');
@@ -43,9 +46,39 @@ export default function App() {
     setCurrentStep(2);
   };
 
-  const handleLifestyleSubmit = (data: typeof lifestyleData) => {
-    setLifestyleData(data);
-    setCurrentStep(3);
+  const handleLifestyleSubmit = async  (data: typeof lifestyleData) => {
+    
+     setLifestyleData(data);
+
+  const payload = {
+    income: financesData.monthlyIncome,
+    creditScore: financesData.creditScore,
+    lifestyle: JSON.stringify(data), 
+    preferredType: "SUV", 
+  };
+
+  try {
+    const res = await fetch("http://localhost:8080/api/recommend", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch recommendation");
+    }
+
+    const result = await res.json();
+    setAiRecommendation(result.recommendation);
+    setRecommendedCars(result.models);
+  } catch (err) {
+    console.error("AI fetch error:", err);
+    setAiRecommendation("Sorry, we couldn't generate a recommendation at this time.");
+  }
+
+  setCurrentStep(3);
   };
 
   const handleBack = () => {
@@ -98,8 +131,10 @@ export default function App() {
             )}
             {currentStep === 3 && (
               <ResultsPage
-                financesData={financesData}
+                 financesData={financesData}
                 lifestyleData={lifestyleData}
+                aiRecommendation={aiRecommendation}
+                recommendedCars={recommendedCars}
                 onStartOver={handleStartOver}
               />
             )}

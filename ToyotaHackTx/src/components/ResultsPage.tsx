@@ -17,12 +17,24 @@ interface LifestyleData {
 }
 
 interface ResultsPageProps {
-  financesData: FinancesData;
+ financesData: FinancesData;
   lifestyleData: LifestyleData;
+  aiRecommendation: string | null;
+ recommendedCars: { 
+  name: string;
+  image: string;
+  price: number;
+  seats: number;
+  range: string;
+}[];
   onStartOver: () => void;
 }
 
-export function ResultsPage({ financesData, lifestyleData, onStartOver }: ResultsPageProps) {
+export function ResultsPage({ financesData,
+  lifestyleData,
+  onStartOver,
+  aiRecommendation,
+  recommendedCars, }: ResultsPageProps) {
   // Calculate sample financing based on inputs
   const monthlyIncome = parseFloat(financesData.monthlyIncome) || 0;
   const idealPayment = parseFloat(financesData.idealMonthlyPayment) || 0;
@@ -43,49 +55,7 @@ export function ResultsPage({ financesData, lifestyleData, onStartOver }: Result
   const downPayment = calculateDownPayment();
   const estimatedMonthlyPayment = idealPayment;
 
-  // Sample car recommendations based on preferences
-  const getCarRecommendations = () => {
-    const cars = [
-      {
-        name: 'Toyota Camry',
-        price: 28000,
-        seats: 5,
-        range: 'medium',
-        image: 'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=400',
-      },
-      {
-        name: 'Toyota RAV4',
-        price: 32000,
-        seats: 5,
-        range: 'medium',
-        image: 'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=400',
-      },
-      {
-        name: 'Toyota Highlander',
-        price: 38000,
-        seats: 7,
-        range: 'long',
-        image: 'https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=400',
-      },
-      {
-        name: 'Toyota Corolla',
-        price: 22000,
-        seats: 5,
-        range: 'short',
-        image: 'https://images.unsplash.com/photo-1623869675781-80aa31bd4743?w=400',
-      },
-    ];
-
-    // Filter based on seats and range preferences
-    const seatsNum = parseInt(lifestyleData.seats) || 5;
-    return cars.filter(car => {
-      const seatsMatch = seatsNum <= 5 ? car.seats === 5 : car.seats >= 7;
-      const rangeMatch = car.range === lifestyleData.range || lifestyleData.range === 'medium';
-      return seatsMatch || rangeMatch;
-    }).slice(0, 3);
-  };
-
-  const recommendedCars = getCarRecommendations();
+ 
 
   const accessoryLabels: { [key: string]: string } = {
     sunroof: 'Sunroof',
@@ -100,6 +70,16 @@ export function ResultsPage({ financesData, lifestyleData, onStartOver }: Result
 
   return (
     <div className="space-y-8">
+
+     {aiRecommendation && (
+        <Card className="bg-white rounded-lg shadow-lg p-6">
+          <h2 className="text-red-600 mb-2">AI Recommendation</h2>
+          <p className="text-gray-700 whitespace-pre-line">
+            {aiRecommendation}
+          </p>
+        </Card>
+      )}
+
       {/* Summary Header */}
       <Card className="bg-white rounded-lg shadow-lg p-8">
         <div className="text-center mb-6">
@@ -161,22 +141,23 @@ export function ResultsPage({ financesData, lifestyleData, onStartOver }: Result
         <h2 className="text-red-600 mb-6">Recommended Vehicles</h2>
         <div className="grid md:grid-cols-3 gap-6">
           {recommendedCars.map((car, index) => (
-            <Card key={index} className="bg-white rounded-lg shadow-lg overflow-hidden">
-              <img
-                src={car.image}
-                alt={car.name}
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-6">
-                <h3 className="mb-2">{car.name}</h3>
-                <p className="text-gray-600 mb-2">Starting at ${car.price.toLocaleString()}</p>
-                <p className="text-gray-600">{car.seats} seats</p>
-                <Button className="w-full mt-4 bg-red-600 hover:bg-red-700">
-                  Learn More
-                </Button>
-              </div>
-            </Card>
-          ))}
+          <Card key={index} className="bg-white rounded-lg shadow-lg overflow-hidden">
+            <img
+              src={car.image}
+              alt={car.name}
+              className="w-full h-48 object-cover"
+            />
+            <div className="p-6">
+              <h3 className="mb-2">{car.name}</h3>
+              <p className="text-gray-600 mb-2">Starting at ${car.price.toLocaleString()}</p>
+              <p className="text-gray-600">{car.seats} seats</p>
+              <p className="text-gray-600 capitalize">Range: {car.range}</p>
+              <Button className="w-full mt-4 bg-red-600 hover:bg-red-700">
+                Learn More
+              </Button>
+            </div>
+          </Card>
+        ))}
         </div>
       </div>
 

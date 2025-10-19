@@ -150,7 +150,7 @@ export function FinancesQuiz({ onSubmit, initialData }: FinancesQuizProps) {
 
         <div className="pt-4">
           <Button type="submit" className="w-full bg-red-600 hover:bg-red-700">
-            Continue to Lifestyle Quiz
+            Continue to Car Preference Quiz
           </Button>
         </div>
       </form>

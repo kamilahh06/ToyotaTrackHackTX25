@@ -86,3 +86,5 @@ router.post("/chat", async (req, res) => {
     conversationSessions.delete(sessionId);
     res.json({ message: "Conversation history cleared" });
   });
+
+  export default router;

@@ -6,12 +6,14 @@ import { FinancesQuiz } from './components/FinancesQuiz';
 import { LifestyleQuiz } from './components/LifestyleQuiz';
 import { ResultsPage } from './components/ResultsPage';
 import { AccountPage } from './components/AccountPage';
-import express from "express";
+// import express from "express";
 
 
 type PageView = 'home' | 'quiz' | 'account';
 
 export default function App() {
+
+  
   const [currentPage, setCurrentPage] = useState<PageView>('home');
   const [currentStep, setCurrentStep] = useState(1);
   const [financesData, setFinancesData] = useState({
@@ -48,40 +50,78 @@ export default function App() {
     setCurrentStep(2);
   };
 
-  const handleLifestyleSubmit = async  (data: typeof lifestyleData) => {
+  // const handleLifestyleSubmit = async  (data: typeof lifestyleData) => {
     
-     setLifestyleData(data);
+  //    setLifestyleData(data);
 
-  const payload = {
-    income: financesData.monthlyIncome,
-    creditScore: financesData.creditScore,
-    lifestyle: data,
-    preferredType: "SUV", 
-  };
+  // const payload = {
+  //   income: financesData.monthlyIncome,
+  //   creditScore: financesData.creditScore,
+  //   lifestyle: data,
+  //   preferredType: "SUV",
+    
+  // };
 
-  try {
-    const res = await fetch("http://localhost:8080/api/recommend", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
+  // try {
+  //   const res = await fetch("http://localhost:8080/api/recommend", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify(payload),
+  //   });
 
-    if (!res.ok) {
-      throw new Error("Failed to fetch recommendation");
+    
+
+  //   if (!res.ok) {
+  //     throw new Error("Failed to fetch recommendation");
+  //   }
+
+  //   const result = await res.json();
+  //   console.log("Fetched AI Result:", result);
+  //   console.log("✅ Recommendation response:", result);
+  //   console.log("🚗 Recommended cars:", result.models); // ADD THIS LINE
+  //   console.log("📝 AI text:", result.recommendationContent); // ADD THIS LINE
+  //  setAiRecommendation(result.recommendationContent);
+  //   setRecommendedCars(result.models);
+  // } catch (err) {
+  //   console.error("AI fetch error:", err);
+  //   setAiRecommendation("Sorry, we couldn't generate a recommendation at this time.");
+  // }
+
+  // setCurrentStep(3);
+  // };
+  const handleLifestyleSubmit = async (data: typeof lifestyleData) => {
+    setLifestyleData(data);
+  
+    try {
+      // 🔴 CHANGE THIS LINE - use port 5000, not 8080
+      const response = await fetch("http://localhost:8080/api/recommend", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          income: financesData.monthlyIncome,
+          creditScore: financesData.creditScore,
+          lifestyle: data,
+          preferredType: "sedan",
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      const result = await response.json();
+      console.log("✅ Recommendation response:", result);
+  
+      setAiRecommendation(result.recommendationContent || null);
+      setRecommendedCars(result.models || []);
+  
+      setCurrentStep(3);
+    } catch (err: any) {
+      console.error("❌ Error fetching recommendations:", err);
+      alert(`Failed to load recommendations: ${err.message}`);
     }
-
-    const result = await res.json();
-    console.log("Fetched AI Result:", result);
-   setAiRecommendation(result.recommendationContent); 
-    setRecommendedCars(result.models);
-  } catch (err) {
-    console.error("AI fetch error:", err);
-    setAiRecommendation("Sorry, we couldn't generate a recommendation at this time.");
-  }
-
-  setCurrentStep(3);
   };
 
   const handleBack = () => {

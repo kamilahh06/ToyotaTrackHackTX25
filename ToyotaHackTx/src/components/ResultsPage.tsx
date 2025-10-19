@@ -36,6 +36,10 @@ export function ResultsPage({ financesData,
   onStartOver,
   aiRecommendation,
   recommendedCars, }: ResultsPageProps) {
+        // ADD THESE DEBUG LOGS
+      console.log("🎯 ResultsPage received cars:", recommendedCars);
+      console.log("🎯 Number of cars:", recommendedCars.length);
+
   // Calculate sample financing based on inputs
   const monthlyIncome = parseFloat(financesData.monthlyIncome) || 0;
   const idealPayment = parseFloat(financesData.idealMonthlyPayment) || 0;
@@ -132,6 +136,14 @@ export function ResultsPage({ financesData,
       {/* Car Recommendations */}
       <div>
         <h2 className="text-red-600 mb-6">Recommended Vehicles</h2>
+          {/* ADD THIS DEBUG INFO */}
+          {recommendedCars.length === 0 && (
+            <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-4">
+              <p className="font-bold">Debug: No cars found</p>
+              <p>Check console for details</p>
+            </div>
+                )}
+              
         <div className="grid md:grid-cols-3 gap-6">
           {recommendedCars.map((car, index) => (
           <Card key={index} className="bg-white rounded-lg shadow-lg overflow-hidden">

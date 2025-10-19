@@ -2,6 +2,7 @@ import { Button } from './ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from './ui/carousel';
 import myCarImage from '../assets/haha.png';
 import myCarImage2 from '../assets/haha2.png';
+import myCarImage3 from '../assets/haha3.png';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 
 interface HomePageProps {
@@ -19,12 +20,8 @@ export function HomePage({ onStartQuiz }: HomePageProps) {
       alt: 'Modern car interior',
     },
     {
-      url: 'https://images.unsplash.com/photo-1646208199109-68610835342d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzcG9ydHMlMjBjYXIlMjBkcml2aW5nfGVufDF8fHx8MTc2MDgyNDk0MXww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+      url: myCarImage3,
       alt: 'Sports car driving',
-    },
-    {
-      url: 'https://images.unsplash.com/photo-1593941707874-ef25b8b4a92b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlbGVjdHJpYyUyMGNhciUyMGNoYXJnaW5nfGVufDF8fHx8MTc2MDc4NjA5Nnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-      alt: 'Electric car charging',
     },
   ];
 

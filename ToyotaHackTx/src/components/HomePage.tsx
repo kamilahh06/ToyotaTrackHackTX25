@@ -1,5 +1,7 @@
 import { Button } from './ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from './ui/carousel';
+import myCarImage from '../assets/haha.png';
+import myCarImage2 from '../assets/haha2.png';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 
 interface HomePageProps {
@@ -9,11 +11,11 @@ interface HomePageProps {
 export function HomePage({ onStartQuiz }: HomePageProps) {
   const carouselImages = [
     {
-      url: 'https://images.unsplash.com/photo-1705747401901-28363172fe7e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBjYXIlMjBzaG93cm9vbXxlbnwxfHx8fDE3NjA4MDM5MzJ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-      alt: 'Luxury car showroom',
+      url: myCarImage,
+      alt: 'Want the dealership experience from home?',
     },
     {
-      url: 'https://images.unsplash.com/photo-1665491641262-53155eaac2b0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBjYXIlMjBpbnRlcmlvcnxlbnwxfHx8fDE3NjA4MjA1Nzl8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+      url: myCarImage2,
       alt: 'Modern car interior',
     },
     {
@@ -30,12 +32,12 @@ export function HomePage({ onStartQuiz }: HomePageProps) {
     <div>
       <main className="container mx-auto px-4 py-12">
         {/* Carousel Section */}
-        <div className="max-w-5xl mx-auto mb-16">
+        <div className="max-w-3xl mx-auto mb-6">
           <Carousel className="w-full">
             <CarouselContent>
               {carouselImages.map((image, index) => (
                 <CarouselItem key={index}>
-                  <div className="relative w-full h-[500px] rounded-lg overflow-hidden">
+                  <div className="relative w-full h-[25vh] rounded-lg overflow-hidden">
                     <ImageWithFallback
                       src={image.url}
                       alt={image.alt}

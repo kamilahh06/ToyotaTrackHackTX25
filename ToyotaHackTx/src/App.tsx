@@ -78,7 +78,14 @@ export default function App() {
       )}
 
       {currentPage === 'account' && (
-        <AccountPage onBack={handleBackToHome} />
+        <AccountPage 
+      onBack={handleBackToHome} 
+      onStartQuiz={handleStartQuiz} 
+      onGoToResults={() => {
+      setCurrentPage('quiz');
+      setCurrentStep(3);
+    }}
+  />
       )}
 
       {currentPage === 'quiz' && (

@@ -12,7 +12,9 @@ export function Navbar({ onAccountClick }: NavbarProps) {
         <div className="flex items-center justify-between">
           {/* Logo - Left Aligned */}
           <div className="flex items-center gap-2">
-            <img src={logoImage} alt="Toyota Logo" className="h-10" />
+            <a href="/">
+              <img src={logoImage} alt="Toyota Logo" className="h-10" />
+            </a>
           </div>
 
           {/* Navigation Links - Right Aligned */}

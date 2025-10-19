@@ -44,19 +44,19 @@ router.post("/", async (req, res) => {
     }));
 
     const prompt = `
-You are a helpful automotive expert recommending Toyota models for users.
+      You are a helpful automotive expert recommending Toyota models for users.
 
-User info:
-- Income: $${income}
-- Credit Score: ${creditScore}
-- Lifestyle: ${lifestyle}
-- Preferred Vehicle Type: ${preferredType}
+      User info:
+      - Income: $${income}
+      - Credit Score: ${creditScore}
+      - Lifestyle: ${lifestyle}
+      - Preferred Vehicle Type: ${preferredType}
 
-Available Toyota Models:
-${JSON.stringify(simplified, null, 2)}
+      Available Toyota Models:
+      ${JSON.stringify(simplified, null, 2)}
 
-Recommend the 2–3 best options and briefly explain why each suits the user.
-`;
+      Recommend the 2–3 best options and briefly explain why each suits the user.
+      `;
 
     const response = await cohere.chat({
       model: "command-a-reasoning-08-2025",

@@ -8,9 +8,12 @@ import { ArrowLeft } from 'lucide-react';
 
 interface AccountPageProps {
   onBack: () => void;
+  onStartQuiz: () => void;
+  onGoToResults: () => void;
 }
 
-export function AccountPage({ onBack }: AccountPageProps) {
+
+export function AccountPage({ onBack, onStartQuiz , onGoToResults}: AccountPageProps) {
   const [signInData, setSignInData] = useState({
     email: '',
     phoneNumber: '',
@@ -75,6 +78,7 @@ export function AccountPage({ onBack }: AccountPageProps) {
       // Handle sign in logic here
       console.log('Sign in:', signInData);
       alert('Sign in successful!');
+      onGoToResults();
     }
   };
 
@@ -116,6 +120,9 @@ export function AccountPage({ onBack }: AccountPageProps) {
       // Handle create account logic here
       console.log('Create account:', createAccountData);
       alert('Account created successfully!');
+
+      // Navigate to quiz page
+        onStartQuiz();
     }
   };
 
@@ -279,7 +286,10 @@ export function AccountPage({ onBack }: AccountPageProps) {
                   <p className="mt-1 text-gray-600">Required for credit verification</p>
                 </div>
 
-                <Button type="submit" className="w-full bg-red-600 hover:bg-red-700">
+                <Button 
+                type="submit" 
+                className="w-full bg-red-600 hover:bg-red-700" 
+                >
                   Create Account
                 </Button>
               </form>

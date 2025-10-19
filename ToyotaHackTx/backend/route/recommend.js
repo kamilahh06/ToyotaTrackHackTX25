@@ -82,16 +82,16 @@ router.post("/", async (req, res) => {
 
     // Prompt to Cohere
     const prompt = `
-You are a helpful automotive expert recommending Toyota models for users.
+      You are a helpful automotive expert recommending Toyota models for users.
 
-User info:
-- Income: $${income}
-- Credit Score: ${creditScore}
-- Lifestyle: ${lifestyle}
-- Preferred Vehicle Type: ${preferredType}
+      User info:
+      - Income: $${income}
+      - Credit Score: ${creditScore}
+      - Lifestyle: ${lifestyle}
+      - Preferred Vehicle Type: ${preferredType}
 
-Available Toyota Models:
-${JSON.stringify(simplified, null, 2)}
+      Available Toyota Models:
+      ${JSON.stringify(simplified, null, 2)}
 
 Recommend the 3 best options and briefly explain why each suits the user.
 `;
